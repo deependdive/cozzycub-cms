@@ -30,6 +30,13 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        <link
+          rel="icon"
+          href="https://oeplvizkaitaipopdace.supabase.co/storage/v1/object/public/products/cmssiteico.png"
+          type="image/png"
+        />
+      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
