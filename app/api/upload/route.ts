@@ -31,8 +31,9 @@ export async function POST(request: NextRequest) {
 
     const fileName = `${Date.now()}-${file.name.replace(/[^a-z0-9.-]/gi, '_').toLowerCase()}`
     const bytes = await file.arrayBuffer()
+    const blob = new Blob([bytes], { type: file.type })
 
-    const { error } = await supabase.storage.from('products').upload(fileName, bytes, {
+    const { error } = await supabase.storage.from('products').upload(fileName, blob, {
       contentType: file.type,
     })
 
