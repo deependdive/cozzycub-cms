@@ -65,18 +65,32 @@ export default function ProductsManager() {
     const file = e.target.files?.[0]
     if (!file) return
 
+    // Validate file size (5MB max)
+    const maxSize = 5 * 1024 * 1024 // 5MB
+    if (file.size > maxSize) {
+      alert(`File is too large. Maximum size is 5MB. Your file is ${(file.size / 1024 / 1024).toFixed(2)}MB`)
+      return
+    }
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file')
+      return
+    }
+
     setUploadingImage(true)
     try {
-      const fileName = `${Date.now()}-${file.name}`
+      const fileName = `${Date.now()}-${file.name.replace(/[^a-z0-9.-]/gi, '_').toLowerCase()}`
       const { error } = await supabase.storage.from('products').upload(fileName, file)
 
       if (error) throw error
 
       const imageUrl = `products/${fileName}`
       setFormData((prev) => ({ ...prev, image_url: imageUrl }))
+      alert('Image uploaded successfully!')
     } catch (error) {
       console.error('Upload error:', error)
-      alert('Failed to upload image')
+      alert(`Failed to upload image: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setUploadingImage(false)
     }
@@ -270,8 +284,8 @@ export default function ProductsManager() {
                 </label>
               </div>
 
-              <div className="border-2 border-dashed border-gray-600 rounded p-4">
-                <label className="cursor-pointer">
+              <div className="border-2 border-dashed border-gray-600 rounded p-6 bg-gray-700/30">
+                <label className="cursor-pointer block">
                   <input
                     type="file"
                     accept="image/*"
@@ -279,11 +293,18 @@ export default function ProductsManager() {
                     disabled={uploadingImage}
                     className="hidden"
                   />
-                  <span className={`block text-center ${uploadingImage ? 'opacity-50' : ''}`}>
-                    {uploadingImage ? 'Uploading...' : 'Click to upload image'}
-                  </span>
+                  <div className={`text-center transition ${uploadingImage ? 'opacity-50 cursor-wait' : 'hover:opacity-80'}`}>
+                    <p className="text-lg font-semibold mb-1">
+                      {uploadingImage ? '⏳ Uploading...' : '📸 Click to upload image'}
+                    </p>
+                    <p className="text-sm text-gray-400">Max 5MB • JPG, PNG, WebP</p>
+                  </div>
                 </label>
-                {formData.image_url && <p className="text-sm text-gray-400 mt-2">✓ {formData.image_url}</p>}
+                {formData.image_url && (
+                  <p className="text-sm text-green-400 mt-3">
+                    ✓ Image: {formData.image_url}
+                  </p>
+                )}
               </div>
 
               <div className="flex gap-4">
