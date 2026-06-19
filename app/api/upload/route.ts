@@ -1,10 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-  process.env.SUPABASE_SERVICE_ROLE_KEY || ''
-)
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,13 +25,25 @@ export async function POST(request: NextRequest) {
 
     const fileName = `${Date.now()}-${file.name.replace(/[^a-z0-9.-]/gi, '_').toLowerCase()}`
     const bytes = await file.arrayBuffer()
-    const blob = new Blob([bytes], { type: file.type })
 
-    const { error } = await supabase.storage.from('products').upload(fileName, blob, {
-      contentType: file.type,
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+    const uploadUrl = `${supabaseUrl}/storage/v1/object/products/${fileName}`
+
+    const uploadResponse = await fetch(uploadUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${serviceRoleKey}`,
+        'Content-Type': file.type,
+      },
+      body: bytes,
     })
 
-    if (error) throw error
+    if (!uploadResponse.ok) {
+      const error = await uploadResponse.text()
+      throw new Error(error)
+    }
 
     const imageUrl = `products/${fileName}`
     return NextResponse.json({ imageUrl })
