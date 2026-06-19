@@ -24,7 +24,8 @@ export async function POST(request: NextRequest) {
     }
 
     const fileName = `${Date.now()}-${file.name.replace(/[^a-z0-9.-]/gi, '_').toLowerCase()}`
-    const bytes = await file.arrayBuffer()
+    const arrayBuffer = await file.arrayBuffer()
+    const buffer = Buffer.from(arrayBuffer)
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -37,7 +38,7 @@ export async function POST(request: NextRequest) {
         'Authorization': `Bearer ${serviceRoleKey}`,
         'Content-Type': file.type,
       },
-      body: bytes,
+      body: buffer,
     })
 
     if (!uploadResponse.ok) {
