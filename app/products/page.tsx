@@ -80,13 +80,21 @@ export default function ProductsManager() {
 
     setUploadingImage(true)
     try {
-      const fileName = `${Date.now()}-${file.name.replace(/[^a-z0-9.-]/gi, '_').toLowerCase()}`
-      const { error } = await supabase.storage.from('products').upload(fileName, file)
+      const formData = new FormData()
+      formData.append('file', file)
 
-      if (error) throw error
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      })
 
-      const imageUrl = `products/${fileName}`
-      setFormData((prev) => ({ ...prev, image_url: imageUrl }))
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Upload failed')
+      }
+
+      setFormData((prev) => ({ ...prev, image_url: data.imageUrl }))
       alert('Image uploaded successfully!')
     } catch (error) {
       console.error('Upload error:', error)
