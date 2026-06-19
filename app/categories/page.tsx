@@ -61,9 +61,19 @@ export default function CategoriesManager() {
 
     try {
       if (editing) {
-        await supabase.from('categories').update(formData).eq('id', editing)
+        const response = await fetch(`/api/categories/${editing}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        })
+        if (!response.ok) throw new Error('Failed to update')
       } else {
-        await supabase.from('categories').insert([formData])
+        const response = await fetch('/api/categories', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        })
+        if (!response.ok) throw new Error('Failed to create')
       }
 
       resetForm()
@@ -78,7 +88,10 @@ export default function CategoriesManager() {
     if (!confirm('Delete this category?')) return
 
     try {
-      await supabase.from('categories').delete().eq('id', id)
+      const response = await fetch(`/api/categories/${id}`, {
+        method: 'DELETE',
+      })
+      if (!response.ok) throw new Error('Failed to delete')
       fetchCategories()
     } catch (error) {
       console.error('Error:', error)

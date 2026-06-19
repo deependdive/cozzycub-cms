@@ -120,9 +120,19 @@ export default function ProductsManager() {
       }
 
       if (editing) {
-        await supabase.from('products').update(productData).eq('id', editing)
+        const response = await fetch(`/api/products/${editing}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(productData),
+        })
+        if (!response.ok) throw new Error('Failed to update')
       } else {
-        await supabase.from('products').insert([productData])
+        const response = await fetch('/api/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(productData),
+        })
+        if (!response.ok) throw new Error('Failed to create')
       }
 
       resetForm()
@@ -137,7 +147,10 @@ export default function ProductsManager() {
     if (!confirm('Delete this product?')) return
 
     try {
-      await supabase.from('products').delete().eq('id', id)
+      const response = await fetch(`/api/products/${id}`, {
+        method: 'DELETE',
+      })
+      if (!response.ok) throw new Error('Failed to delete')
       fetchData()
     } catch (error) {
       console.error('Error:', error)
