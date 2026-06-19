@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
+import { PRODUCT_CLASSIFICATIONS } from '@/lib/config'
 
 interface Product {
   id: string
@@ -13,6 +14,7 @@ interface Product {
   image_url: string
   stock: number
   is_featured: boolean
+  classification?: string
 }
 
 interface Category {
@@ -35,6 +37,7 @@ export default function ProductsManager() {
     image_url: '',
     stock: '',
     is_featured: false,
+    classification: '',
   })
 
   useEffect(() => {
@@ -99,6 +102,7 @@ export default function ProductsManager() {
         image_url: formData.image_url,
         stock: parseInt(formData.stock),
         is_featured: formData.is_featured,
+        classification: formData.classification || null,
       }
 
       if (editing) {
@@ -136,6 +140,7 @@ export default function ProductsManager() {
       image_url: product.image_url,
       stock: product.stock.toString(),
       is_featured: product.is_featured,
+      classification: product.classification || '',
     })
     setEditing(product.id)
     setShowForm(true)
@@ -150,6 +155,7 @@ export default function ProductsManager() {
       image_url: '',
       stock: '',
       is_featured: false,
+      classification: '',
     })
     setEditing(null)
     setShowForm(false)
@@ -181,7 +187,7 @@ export default function ProductsManager() {
           <div className="bg-gray-800 rounded-lg p-8 mb-8">
             <h2 className="text-2xl font-bold mb-6">{editing ? 'Edit Product' : 'Add New Product'}</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid md:grid-cols-3 gap-4">
                 <input
                   type="text"
                   name="name"
@@ -198,9 +204,26 @@ export default function ProductsManager() {
                   className="px-4 py-2 bg-gray-700 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
                 >
                   <option value="">Select Category</option>
-                  {categories.map((cat) => (
-                    <option key={cat.id} value={cat.id}>
-                      {cat.name}
+                  {categories.length === 0 ? (
+                    <option disabled>Create categories first →</option>
+                  ) : (
+                    categories.map((cat) => (
+                      <option key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </option>
+                    ))
+                  )}
+                </select>
+                <select
+                  name="classification"
+                  value={formData.classification}
+                  onChange={handleInputChange}
+                  className="px-4 py-2 bg-gray-700 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
+                >
+                  <option value="">Select Type</option>
+                  {PRODUCT_CLASSIFICATIONS.map((cls) => (
+                    <option key={cls.id} value={cls.id}>
+                      {cls.label}
                     </option>
                   ))}
                 </select>

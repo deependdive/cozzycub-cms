@@ -43,24 +43,28 @@ export default function Dashboard() {
         <p className="text-gray-400 mb-12">Content Management System</p>
 
         <div className="grid md:grid-cols-4 gap-6 mb-12">
-          <Link href="/widgets" className="bg-gray-800 p-8 rounded-lg hover:bg-gray-700 transition border-l-4 border-blue-500">
+          <Link href="/widgets" className="bg-gray-800 p-8 rounded-lg hover:bg-gray-700 transition border-l-4 border-blue-500 cursor-pointer">
             <p className="text-gray-400 text-sm mb-2">Widgets</p>
             <p className="text-4xl font-bold">{stats.widgets}</p>
+            <p className="text-xs text-gray-500 mt-2">Coming soon</p>
           </Link>
 
-          <Link href="/collections" className="bg-gray-800 p-8 rounded-lg hover:bg-gray-700 transition border-l-4 border-green-500">
+          <Link href="/collections" className="bg-gray-800 p-8 rounded-lg hover:bg-gray-700 transition border-l-4 border-green-500 cursor-pointer">
             <p className="text-gray-400 text-sm mb-2">Collections</p>
             <p className="text-4xl font-bold">{stats.collections}</p>
+            <p className="text-xs text-gray-500 mt-2">Coming soon</p>
           </Link>
 
-          <Link href="/products" className="bg-gray-800 p-8 rounded-lg hover:bg-gray-700 transition border-l-4 border-purple-500">
+          <Link href="/products" className="bg-gray-800 p-8 rounded-lg hover:bg-gray-700 transition border-l-4 border-purple-500 cursor-pointer">
             <p className="text-gray-400 text-sm mb-2">Products</p>
             <p className="text-4xl font-bold">{stats.products}</p>
+            <p className="text-xs text-gray-500 mt-2">✓ Active</p>
           </Link>
 
-          <Link href="/categories" className="bg-gray-800 p-8 rounded-lg hover:bg-gray-700 transition border-l-4 border-orange-500">
+          <Link href="/categories" className="bg-gray-800 p-8 rounded-lg hover:bg-gray-700 transition border-l-4 border-orange-500 cursor-pointer">
             <p className="text-gray-400 text-sm mb-2">Categories</p>
             <p className="text-4xl font-bold">{stats.categories}</p>
+            <p className="text-xs text-gray-500 mt-2">✓ Active</p>
           </Link>
         </div>
 
