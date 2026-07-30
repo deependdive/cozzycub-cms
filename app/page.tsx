@@ -11,17 +11,19 @@ export default function Dashboard() {
     products: 0,
     categories: 0,
     media: 0,
+    video: 0,
   })
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [w, c, p, cat, m] = await Promise.all([
+        const [w, c, p, cat, m, v] = await Promise.all([
           supabase.from('widgets').select('*', { count: 'exact', head: true }),
           supabase.from('collections').select('*', { count: 'exact', head: true }),
           supabase.from('products').select('*', { count: 'exact', head: true }),
           supabase.from('categories').select('*', { count: 'exact', head: true }),
           supabase.from('media_assets').select('*', { count: 'exact', head: true }),
+          supabase.from('video_assets').select('*', { count: 'exact', head: true }),
         ])
 
         setStats({
@@ -30,6 +32,7 @@ export default function Dashboard() {
           products: p.count || 0,
           categories: cat.count || 0,
           media: m.count || 0,
+          video: v.count || 0,
         })
       } catch (error) {
         console.error('Error:', error)
@@ -45,7 +48,7 @@ export default function Dashboard() {
         <h1 className="text-4xl font-bold mb-2">Cozzy Cub CMS</h1>
         <p className="text-gray-400 mb-12">Content Management System</p>
 
-        <div className="grid md:grid-cols-5 gap-6 mb-12">
+        <div className="grid md:grid-cols-4 gap-6 mb-12">
           <Link href="/widgets" className="bg-gray-800 p-8 rounded-lg hover:bg-gray-700 transition border-l-4 border-blue-500 cursor-pointer">
             <p className="text-gray-400 text-sm mb-2">Widgets</p>
             <p className="text-4xl font-bold">{stats.widgets}</p>
@@ -69,23 +72,23 @@ export default function Dashboard() {
             <p className="text-4xl font-bold">{stats.categories}</p>
             <p className="text-xs text-gray-500 mt-2">✓ Active</p>
           </Link>
-
-          <Link href="/media" className="bg-gray-800 p-8 rounded-lg hover:bg-gray-700 transition border-l-4 border-pink-500 cursor-pointer">
-            <p className="text-gray-400 text-sm mb-2">Media</p>
-            <p className="text-4xl font-bold">{stats.media}</p>
-            <p className="text-xs text-gray-500 mt-2">✓ Active</p>
-          </Link>
         </div>
 
-        <div className="bg-gray-800 rounded-lg p-8">
-          <h2 className="text-2xl font-bold mb-6">Quick Start</h2>
-          <ol className="space-y-3 text-gray-300">
-            <li>1. Create categories first</li>
-            <li>2. Add products to categories</li>
-            <li>3. Create widgets for UI components</li>
-            <li>4. Group widgets into collections</li>
-            <li>5. Website updates in real-time!</li>
-          </ol>
+        <div>
+          <h2 className="text-2xl font-bold mb-6">Media</h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            <Link href="/media" className="bg-gray-800 p-8 rounded-lg hover:bg-gray-700 transition border-l-4 border-pink-500 cursor-pointer text-center">
+              <p className="text-2xl font-bold mb-2">🖼️ Image</p>
+              <p className="text-4xl font-bold">{stats.media}</p>
+              <p className="text-xs text-gray-500 mt-2">✓ Active</p>
+            </Link>
+
+            <Link href="/video" className="bg-gray-800 p-8 rounded-lg hover:bg-gray-700 transition border-l-4 border-cyan-500 cursor-pointer text-center">
+              <p className="text-2xl font-bold mb-2">🎬 Video</p>
+              <p className="text-4xl font-bold">{stats.video}</p>
+              <p className="text-xs text-gray-500 mt-2">✓ Active</p>
+            </Link>
+          </div>
         </div>
       </div>
     </div>
