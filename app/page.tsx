@@ -10,16 +10,18 @@ export default function Dashboard() {
     collections: 0,
     products: 0,
     categories: 0,
+    media: 0,
   })
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [w, c, p, cat] = await Promise.all([
+        const [w, c, p, cat, m] = await Promise.all([
           supabase.from('widgets').select('*', { count: 'exact', head: true }),
           supabase.from('collections').select('*', { count: 'exact', head: true }),
           supabase.from('products').select('*', { count: 'exact', head: true }),
           supabase.from('categories').select('*', { count: 'exact', head: true }),
+          supabase.from('media_assets').select('*', { count: 'exact', head: true }),
         ])
 
         setStats({
@@ -27,6 +29,7 @@ export default function Dashboard() {
           collections: c.count || 0,
           products: p.count || 0,
           categories: cat.count || 0,
+          media: m.count || 0,
         })
       } catch (error) {
         console.error('Error:', error)
@@ -42,7 +45,7 @@ export default function Dashboard() {
         <h1 className="text-4xl font-bold mb-2">Cozzy Cub CMS</h1>
         <p className="text-gray-400 mb-12">Content Management System</p>
 
-        <div className="grid md:grid-cols-4 gap-6 mb-12">
+        <div className="grid md:grid-cols-5 gap-6 mb-12">
           <Link href="/widgets" className="bg-gray-800 p-8 rounded-lg hover:bg-gray-700 transition border-l-4 border-blue-500 cursor-pointer">
             <p className="text-gray-400 text-sm mb-2">Widgets</p>
             <p className="text-4xl font-bold">{stats.widgets}</p>
@@ -64,6 +67,12 @@ export default function Dashboard() {
           <Link href="/categories" className="bg-gray-800 p-8 rounded-lg hover:bg-gray-700 transition border-l-4 border-orange-500 cursor-pointer">
             <p className="text-gray-400 text-sm mb-2">Categories</p>
             <p className="text-4xl font-bold">{stats.categories}</p>
+            <p className="text-xs text-gray-500 mt-2">✓ Active</p>
+          </Link>
+
+          <Link href="/media" className="bg-gray-800 p-8 rounded-lg hover:bg-gray-700 transition border-l-4 border-pink-500 cursor-pointer">
+            <p className="text-gray-400 text-sm mb-2">Media</p>
+            <p className="text-4xl font-bold">{stats.media}</p>
             <p className="text-xs text-gray-500 mt-2">✓ Active</p>
           </Link>
         </div>
