@@ -46,7 +46,7 @@ export default function Dashboard() {
           <Link href="/widgets" className="bg-gray-800 p-8 rounded-lg hover:bg-gray-700 transition border-l-4 border-blue-500 cursor-pointer">
             <p className="text-gray-400 text-sm mb-2">Widgets</p>
             <p className="text-4xl font-bold">{stats.widgets}</p>
-            <p className="text-xs text-gray-500 mt-2">Coming soon</p>
+            <p className="text-xs text-gray-500 mt-2">✓ Active</p>
           </Link>
 
           <Link href="/collections" className="bg-gray-800 p-8 rounded-lg hover:bg-gray-700 transition border-l-4 border-green-500 cursor-pointer">
