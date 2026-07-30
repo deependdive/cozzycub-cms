@@ -86,7 +86,8 @@ export async function POST(request: NextRequest) {
     const outputFiles = await fs.readdir(workDir)
     const segmentFiles = outputFiles.filter((f) => f.endsWith('.ts'))
 
-    const hlsPrefix = `hls/${id}`
+    const sanitizedName = String(filename).replace(/[^a-z0-9.-]/gi, '_').toLowerCase()
+    const hlsPrefix = `hls/${id}-${sanitizedName}`
     for (const segmentFile of segmentFiles) {
       const buffer = await fs.readFile(path.join(workDir, segmentFile))
       await uploadToStorage(HLS_BUCKET, `${hlsPrefix}/${segmentFile}`, buffer, 'video/mp2t')
