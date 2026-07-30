@@ -58,7 +58,7 @@ export default function Dashboard() {
           <Link href="/collections" className="bg-gray-800 p-8 rounded-lg hover:bg-gray-700 transition border-l-4 border-green-500 cursor-pointer">
             <p className="text-gray-400 text-sm mb-2">Collections</p>
             <p className="text-4xl font-bold">{stats.collections}</p>
-            <p className="text-xs text-gray-500 mt-2">Coming soon</p>
+            <p className="text-xs text-gray-500 mt-2">✓ Active</p>
           </Link>
 
           <Link href="/products" className="bg-gray-800 p-8 rounded-lg hover:bg-gray-700 transition border-l-4 border-purple-500 cursor-pointer">
