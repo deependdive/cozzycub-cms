@@ -85,6 +85,7 @@ export default function ProductsManager() {
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState<string | null>(null)
+  const [editingProductCode, setEditingProductCode] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [search, setSearch] = useState('')
   const [formError, setFormError] = useState('')
@@ -286,6 +287,7 @@ export default function ProductsManager() {
         }))
     )
     setEditing(product.id)
+    setEditingProductCode(product.product_code)
     setFormError('')
     setVariantSearch('')
     setShowForm(true)
@@ -298,6 +300,7 @@ export default function ProductsManager() {
     setVideos([])
     setVariants([])
     setEditing(null)
+    setEditingProductCode(null)
     setFormError('')
     setVariantSearch('')
     setShowForm(false)
@@ -332,7 +335,14 @@ export default function ProductsManager() {
 
         {showForm && (
           <div className="bg-gray-800 rounded-lg p-8 mb-8">
-            <h2 className="text-2xl font-bold mb-6">{editing ? 'Edit Product' : 'Add New Product'}</h2>
+            <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+              {editing ? 'Edit Product' : 'Add New Product'}
+              {editingProductCode && (
+                <span className="text-sm font-mono font-normal px-3 py-1 bg-gray-700 rounded text-blue-300">
+                  ID: {editingProductCode}
+                </span>
+              )}
+            </h2>
             <form onSubmit={handleSubmit} className="space-y-6">
               {formError && (
                 <p className="text-sm text-red-400 bg-red-900/30 border border-red-800 rounded px-4 py-2">{formError}</p>
@@ -586,7 +596,7 @@ export default function ProductsManager() {
               {filteredProducts.map((product) => (
                 <tr key={product.id} className="hover:bg-gray-700 transition">
                   <td className="px-6 py-4 font-semibold">{product.name}</td>
-                  <td className="px-6 py-4 text-sm text-gray-400">{product.product_code}</td>
+                  <td className="px-6 py-4 text-sm font-mono text-blue-300">{product.product_code}</td>
                   <td className="px-6 py-4">
                     <span className="line-through text-gray-500 text-sm mr-1">₹{product.msrp}</span>
                     <span>₹{product.selling_price}</span>
