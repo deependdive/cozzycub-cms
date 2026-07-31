@@ -12,18 +12,20 @@ export default function Dashboard() {
     categories: 0,
     media: 0,
     video: 0,
+    offers: 0,
   })
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [w, c, p, cat, m, v] = await Promise.all([
+        const [w, c, p, cat, m, v, o] = await Promise.all([
           supabase.from('widgets').select('*', { count: 'exact', head: true }),
           supabase.from('collections').select('*', { count: 'exact', head: true }),
           supabase.from('products').select('*', { count: 'exact', head: true }),
           supabase.from('categories').select('*', { count: 'exact', head: true }),
           supabase.from('media_assets').select('*', { count: 'exact', head: true }),
           supabase.from('video_assets').select('*', { count: 'exact', head: true }),
+          fetch('/api/promo-codes').then((r) => r.json()),
         ])
 
         setStats({
@@ -33,6 +35,7 @@ export default function Dashboard() {
           categories: cat.count || 0,
           media: m.count || 0,
           video: v.count || 0,
+          offers: o.promoCodes?.length || 0,
         })
       } catch (error) {
         console.error('Error:', error)
@@ -48,7 +51,7 @@ export default function Dashboard() {
         <h1 className="text-4xl font-bold mb-2">Cozzy Cub CMS</h1>
         <p className="text-gray-400 mb-12">Content Management System</p>
 
-        <div className="grid md:grid-cols-4 gap-6 mb-12">
+        <div className="grid md:grid-cols-5 gap-6 mb-12">
           <Link href="/widgets" className="bg-gray-800 p-8 rounded-lg hover:bg-gray-700 transition border-l-4 border-blue-500 cursor-pointer">
             <p className="text-gray-400 text-sm mb-2">Widgets</p>
             <p className="text-4xl font-bold">{stats.widgets}</p>
@@ -70,6 +73,12 @@ export default function Dashboard() {
           <Link href="/categories" className="bg-gray-800 p-8 rounded-lg hover:bg-gray-700 transition border-l-4 border-orange-500 cursor-pointer">
             <p className="text-gray-400 text-sm mb-2">Categories</p>
             <p className="text-4xl font-bold">{stats.categories}</p>
+            <p className="text-xs text-gray-500 mt-2">✓ Active</p>
+          </Link>
+
+          <Link href="/offers" className="bg-gray-800 p-8 rounded-lg hover:bg-gray-700 transition border-l-4 border-yellow-500 cursor-pointer">
+            <p className="text-gray-400 text-sm mb-2">Offers</p>
+            <p className="text-4xl font-bold">{stats.offers}</p>
             <p className="text-xs text-gray-500 mt-2">✓ Active</p>
           </Link>
         </div>
