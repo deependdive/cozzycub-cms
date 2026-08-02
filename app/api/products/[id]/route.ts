@@ -15,12 +15,15 @@ interface ProductInput {
   quantity_max: number
   offer_widget_id: string | null
   rich_collection_id: string | null
+  classification: string | null
   cta_text: string
   is_featured: boolean
   images: string[]
   videos: string[]
   variants: { variant_name: string; variant_product_id: string; swatch_image_url: string }[]
 }
+
+const CLASSIFICATIONS = ['kit', 'figure', 'coaster', 'tray', 'art_supply']
 
 function validateProduct(body: Partial<ProductInput>): string | null {
   if (!body.name || !body.name.trim()) return 'Product name is required'
@@ -30,6 +33,9 @@ function validateProduct(body: Partial<ProductInput>): string | null {
   if (typeof body.quantity_default !== 'number' || body.quantity_default < 1) return 'Quantity default must be at least 1'
   if (typeof body.quantity_max === 'number' && body.quantity_max < body.quantity_default) {
     return 'Quantity max cannot be less than quantity default'
+  }
+  if (body.classification && !CLASSIFICATIONS.includes(body.classification)) {
+    return 'Invalid classification'
   }
   if (!Array.isArray(body.images) || body.images.filter((u) => u.trim()).length === 0) {
     return 'At least one product image is required'
@@ -76,6 +82,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         quantity_max: body.quantity_max ?? 20,
         offer_widget_id: body.offer_widget_id || null,
         rich_collection_id: body.rich_collection_id || null,
+        classification: body.classification || null,
         cta_text: body.cta_text?.trim() || 'Add to Cart',
         is_featured: body.is_featured ?? false,
         updated_at: new Date().toISOString(),

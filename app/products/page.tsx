@@ -25,6 +25,14 @@ interface ProductVariant {
   variant: { id: string; name: string; product_code: string } | null
 }
 
+const CLASSIFICATIONS = [
+  { value: 'kit', label: 'Kit' },
+  { value: 'figure', label: 'Figure' },
+  { value: 'coaster', label: 'Coaster' },
+  { value: 'tray', label: 'Tray' },
+  { value: 'art_supply', label: 'Art Supply' },
+] as const
+
 interface Product {
   id: string
   product_code: string
@@ -37,6 +45,7 @@ interface Product {
   quantity_max: number
   offer_widget_id: string | null
   rich_collection_id: string | null
+  classification: string | null
   cta_text: string
   is_featured: boolean
   product_images: ProductImage[]
@@ -71,6 +80,7 @@ const emptyForm = {
   quantityMax: '',
   offerWidgetId: '',
   richCollectionId: '',
+  classification: '',
 }
 
 function computeDiscountPercent(msrp: number, sellingPrice: number): number {
@@ -207,6 +217,7 @@ export default function ProductsManager() {
         quantity_max: quantityMax,
         offer_widget_id: formData.offerWidgetId || null,
         rich_collection_id: formData.richCollectionId || null,
+        classification: formData.classification || null,
         cta_text: formData.ctaText.trim() || 'Add to Cart',
         is_featured: formData.isFeatured,
         images: trimmedImages,
@@ -268,6 +279,7 @@ export default function ProductsManager() {
       quantityMax: String(product.quantity_max),
       offerWidgetId: product.offer_widget_id || '',
       richCollectionId: product.rich_collection_id || '',
+      classification: product.classification || '',
     })
     setInclusions(product.inclusions || [])
     setImages(
@@ -425,6 +437,22 @@ export default function ProductsManager() {
                   onChange={handleFieldChange}
                   className="px-4 py-2 bg-gray-700 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
                 />
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-4">
+                <select
+                  name="classification"
+                  value={formData.classification}
+                  onChange={handleFieldChange}
+                  className="px-4 py-2 bg-gray-700 rounded border border-gray-600 focus:border-blue-500 focus:outline-none"
+                >
+                  <option value="">Classification (none)</option>
+                  {CLASSIFICATIONS.map((c) => (
+                    <option key={c.value} value={c.value}>
+                      {c.label}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">
@@ -585,6 +613,7 @@ export default function ProductsManager() {
               <tr>
                 <th className="px-6 py-4 text-left">Product</th>
                 <th className="px-6 py-4 text-left">Code</th>
+                <th className="px-6 py-4 text-left">Classification</th>
                 <th className="px-6 py-4 text-left">Price</th>
                 <th className="px-6 py-4 text-left">Discount</th>
                 <th className="px-6 py-4 text-left">Assets</th>
@@ -597,6 +626,9 @@ export default function ProductsManager() {
                 <tr key={product.id} className="hover:bg-gray-700 transition">
                   <td className="px-6 py-4 font-semibold">{product.name}</td>
                   <td className="px-6 py-4 text-sm font-mono text-blue-300">{product.product_code}</td>
+                  <td className="px-6 py-4 text-sm text-gray-300">
+                    {CLASSIFICATIONS.find((c) => c.value === product.classification)?.label || '—'}
+                  </td>
                   <td className="px-6 py-4">
                     <span className="line-through text-gray-500 text-sm mr-1">₹{product.msrp}</span>
                     <span>₹{product.selling_price}</span>

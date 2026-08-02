@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: "Cozzy Cub CMS",
   description: "Content Management System for Cozzy Cub",
   icons: {
-    icon: "https://oeplvizkaitaipopdace.supabase.co/storage/v1/object/public/products/cmssiteico.png",
+    icon: "https://oeplvizkaitaipopdace.supabase.co/storage/v1/object/public/widget-media/1785697857392-cms_favicon__1_.png",
   },
 };
 
@@ -33,7 +33,7 @@ export default function RootLayout({
       <head>
         <link
           rel="icon"
-          href="https://oeplvizkaitaipopdace.supabase.co/storage/v1/object/public/products/cmssiteico.png"
+          href="https://oeplvizkaitaipopdace.supabase.co/storage/v1/object/public/widget-media/1785697857392-cms_favicon__1_.png"
           type="image/png"
         />
       </head>
