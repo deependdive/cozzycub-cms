@@ -13,12 +13,13 @@ export default function Dashboard() {
     media: 0,
     video: 0,
     offers: 0,
+    orders: 0,
   })
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [w, c, p, cat, m, v, o] = await Promise.all([
+        const [w, c, p, cat, m, v, o, ord] = await Promise.all([
           supabase.from('widgets').select('*', { count: 'exact', head: true }),
           supabase.from('collections').select('*', { count: 'exact', head: true }),
           supabase.from('products').select('*', { count: 'exact', head: true }),
@@ -26,6 +27,7 @@ export default function Dashboard() {
           supabase.from('media_assets').select('*', { count: 'exact', head: true }),
           supabase.from('video_assets').select('*', { count: 'exact', head: true }),
           fetch('/api/promo-codes').then((r) => r.json()),
+          fetch('/api/orders?page=1').then((r) => r.json()),
         ])
 
         setStats({
@@ -36,6 +38,7 @@ export default function Dashboard() {
           media: m.count || 0,
           video: v.count || 0,
           offers: o.promoCodes?.length || 0,
+          orders: ord.total || 0,
         })
       } catch (error) {
         console.error('Error:', error)
@@ -51,7 +54,13 @@ export default function Dashboard() {
         <h1 className="text-4xl font-bold mb-2">Cozzy Cub CMS</h1>
         <p className="text-gray-400 mb-12">Content Management System</p>
 
-        <div className="grid md:grid-cols-5 gap-6 mb-12">
+        <div className="grid md:grid-cols-6 gap-6 mb-12">
+          <Link href="/orders" className="bg-gray-800 p-8 rounded-lg hover:bg-gray-700 transition border-l-4 border-red-500 cursor-pointer">
+            <p className="text-gray-400 text-sm mb-2">Orders</p>
+            <p className="text-4xl font-bold">{stats.orders}</p>
+            <p className="text-xs text-gray-500 mt-2">✓ Active</p>
+          </Link>
+
           <Link href="/widgets" className="bg-gray-800 p-8 rounded-lg hover:bg-gray-700 transition border-l-4 border-blue-500 cursor-pointer">
             <p className="text-gray-400 text-sm mb-2">Widgets</p>
             <p className="text-4xl font-bold">{stats.widgets}</p>
